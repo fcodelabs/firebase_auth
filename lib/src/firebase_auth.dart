@@ -398,6 +398,19 @@ class FirebaseAuth {
     });
   }
 
+  Future<AuthResult> signInWithMicrosoft() async {
+    final Map<String, dynamic> data =
+    await channel.invokeMapMethod<String, dynamic>(
+      'signInWithMicrosoft',
+      <String, dynamic>{
+        'app': app.name,
+      },
+    );
+    print("<<<<<<<<<<<<<<<<<<<<<<<<<<<||||||||}}}}}}}}}}}}}{{{{{{{{{{{{>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    final AuthResult authResult = AuthResult._(data, app);
+    return authResult;
+  }
+
   Future<void> _callHandler(MethodCall call) async {
     switch (call.method) {
       case 'onAuthStateChanged':

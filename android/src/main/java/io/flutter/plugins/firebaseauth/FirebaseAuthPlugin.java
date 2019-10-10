@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseUserMetadata;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.OAuthProvider;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider.ForceResendingToken;
@@ -164,14 +165,31 @@ public class FirebaseAuthPlugin implements MethodCallHandler {
       case "setLanguageCode":
         handleSetLanguageCode(call, result, getAuth(call));
         break;
+      case "signInWithMicrosoft":
+        handleSignInWithMicrosoft(call, result, getAuth(call));
+        break;
       default:
         result.notImplemented();
         break;
     }
   }
 
+  private void handleSignInWithMicrosoft(MethodCall call, Result result, FirebaseAuth firebaseAuth) {
+    System.out.println("Print>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CALL CAME");
+    final OAuthProvider.Builder provider = OAuthProvider.newBuilder("microsoft.com");
+    Task<AuthResult> pendingResultTask = firebaseAuth.getPendingAuthResult();
+    if (pendingResultTask != null) {
+      pendingResultTask
+              .addOnCompleteListener(new SignInCompleteListener(result));
+    } else {
+      firebaseAuth
+              .startActivityForSignInWithProvider(registrar.activity(), provider.build())
+              .addOnCompleteListener(new SignInCompleteListener(result));
+    }
+  }
+
   private void handleSignInWithPhoneNumber(
-      MethodCall call, Result result, FirebaseAuth firebaseAuth) {
+          MethodCall call, Result result, FirebaseAuth firebaseAuth) {
     Map<String, String> arguments = call.arguments();
     String verificationId = arguments.get("verificationId");
     String smsCode = arguments.get("smsCode");
@@ -685,6 +703,7 @@ public class FirebaseAuthPlugin implements MethodCallHandler {
         AdditionalUserInfo additionalUserInfo = authResult.getAdditionalUserInfo();
         Map<String, Object> userMap = (mapFromUser(user));
         Map<String, Object> additionalUserInfoMap = mapFromAdditionalUserInfo(additionalUserInfo);
+
         Map<String, Object> map = new HashMap<>();
         map.put("user", userMap);
         map.put("additionalUserInfo", additionalUserInfoMap);
@@ -772,7 +791,7 @@ public class FirebaseAuthPlugin implements MethodCallHandler {
   private Map<String, Object> mapFromAdditionalUserInfo(AdditionalUserInfo info) {
     if (info != null) {
       Map<String, Object> additionalUserInfoMap = new HashMap<>();
-      additionalUserInfoMap.put("profile", info.getProfile());
+//      additionalUserInfoMap.put("profile", info.getProfile());
       additionalUserInfoMap.put("providerId", info.getProviderId());
       additionalUserInfoMap.put("username", info.getUsername());
       additionalUserInfoMap.put("isNewUser", info.isNewUser());
