@@ -117,6 +117,19 @@ int nextHandle = 0;
                                        forAuthDataResult:authResult
                                                    error:error];
                                  }];
+  } else if ([@"signInWithMicrosoft" isEqualToString:call.method]) {
+      FIROAuthProvider *provider = [FIROAuthProvider providerWithProviderID:@"microsoft.com"];
+      [provider getCredentialWithUIDelegate:nil
+                                 completion:^(FIRAuthCredential *credential, NSError *error) {
+                                     if (credential) {
+                                         [[FIRAuth auth] signInWithCredential:credential
+                                                                   completion:^(FIRAuthDataResult *authResult, NSError *error) {
+                                                                       [self sendResult:result
+                                                                      forAuthDataResult:authResult
+                                                                                  error:error];
+                                                                   }];
+                                     }
+                                 }];
   } else if ([@"createUserWithEmailAndPassword" isEqualToString:call.method]) {
     NSString *email = call.arguments[@"email"];
     NSString *password = call.arguments[@"password"];
