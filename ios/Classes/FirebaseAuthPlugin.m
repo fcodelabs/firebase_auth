@@ -121,6 +121,9 @@ int nextHandle = 0;
                                  }];
   } else if ([@"signInWithMicrosoft" isEqualToString:call.method]) {
       microsoftProvider = [FIROAuthProvider providerWithProviderID:@"microsoft.com"];
+      microsoftProvider.customParameters = [
+                                   "prompt": "select_account"
+                                            ];
       [microsoftProvider getCredentialWithUIDelegate:nil
                                  completion:^(FIRAuthCredential *credential, NSError *error) {
                                      if (credential) {
