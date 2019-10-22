@@ -175,8 +175,9 @@ public class FirebaseAuthPlugin implements MethodCallHandler {
   }
 
   private void handleSignInWithMicrosoft(MethodCall call, Result result, FirebaseAuth firebaseAuth) {
-    System.out.println("Print>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CALL CAME");
     final OAuthProvider.Builder provider = OAuthProvider.newBuilder("microsoft.com");
+    provider.addCustomParameter("prompt", "select_account");
+    provider.addCustomParameter("tenant", "852c5799-8134-4f15-9d38-eba4296cc76f");
     Task<AuthResult> pendingResultTask = firebaseAuth.getPendingAuthResult();
     if (pendingResultTask != null) {
       pendingResultTask
