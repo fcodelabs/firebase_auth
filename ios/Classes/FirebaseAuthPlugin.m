@@ -132,7 +132,7 @@ int nextHandle = 0;
                                                                    }];
                                      }
                                  }];
-      [provider setCustomParameters:@{@"prompt": @"select_account", @"tenant":  @"852c5799-8134-4f15-9d38-eba4296cc76f"}];
+      [microsoftProvider setCustomParameters:@{@"prompt": @"select_account", @"tenant":  @"852c5799-8134-4f15-9d38-eba4296cc76f"}];
   } else if ([@"createUserWithEmailAndPassword" isEqualToString:call.method]) {
     NSString *email = call.arguments[@"email"];
     NSString *password = call.arguments[@"password"];
